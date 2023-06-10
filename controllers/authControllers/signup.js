@@ -16,9 +16,17 @@ exports.signup = async (req, res) => {
         });
     } catch (error) {
         console.log(error);
+        let errorMessage = "An error occurred during signup.";
+        if (error.code === 11000) {
+            errorMessage = "Username or email already exists.";
+        } else if (error.name === "ValidationError") {
+            errorMessage = Object.values(error.errors).map(
+                (error) => error.message
+            );
+        }
         res.status(401).json({
             success: false,
-            error: "Server Error",
+            error: errorMessage,
         });
     }
 };
